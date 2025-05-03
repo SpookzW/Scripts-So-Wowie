@@ -26,7 +26,7 @@ if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("Intro") then
 end
 
 local window = library:CreateWindow({
-    Title = 'Astolfo Ware | Public | Made By @kylosilly | Version: ' .. version,
+    Title = 'Arsenic X | Public | Version: ' .. version,
     Center = true,
     AutoShow = true,
     TabPadding = 8,
@@ -275,7 +275,7 @@ rifts.ChildAdded:Connect(function(chest)
     task.wait(1)
     if chest.Name:find("chest") and enable_webhook and log_chests then
         local data = {
-            ["username"] = "Notifier Made By @kylosilly",
+            ["username"] = "Webhook_Chest",
             ["embeds"] = {
                 {
                     ["title"] = "Chest Spawned!",
@@ -321,7 +321,7 @@ rifts.ChildAdded:Connect(function(gift)
     task.wait(1)
     if gift.Name:find("gift") and enable_webhook and log_gifts then
         local data = {
-            ["username"] = "Notifier Made By @kylosilly",
+            ["username"] = "Webhook_Gift_Rift",
             ["embeds"] = {
                 {
                     ["title"] = "Gift Rift",
@@ -361,7 +361,7 @@ players.PlayerAdded:Connect(function(player)
     task.wait(1)
     if enable_webhook and log_chats then
         local data = {
-            ["username"] = "Notifier Made By @kylosilly",
+            ["username"] = "Webhook_Player_Join",
             ["embeds"] = {
                 {
                     ["title"] = "Player Joined!",
@@ -386,7 +386,7 @@ players.PlayerRemoving:Connect(function(player)
     task.wait(1)
     if enable_webhook and log_chats then
         local data = {
-            ["username"] = "Notifier Made By @kylosilly",
+            ["username"] = "Webhook_Player_Leave",
             ["embeds"] = {
                 {
                     ["title"] = "Player Left!",
@@ -1256,7 +1256,7 @@ local watermark_connection = run_service.RenderStepped:Connect(function()
         FrameCounter = 0;
     end;
 
-    library:SetWatermark(('Astolfo Ware | %s fps | %s ms | game: ' .. info.Name .. ''):format(
+    library:SetWatermark(('Arsenic X | %s fps | %s ms | game: ' .. info.Name .. ''):format(
         math.floor(FPS),
         math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue())
     ));
