@@ -1,0 +1,243 @@
+-- Reverend Insanity Mobile-Friendly UI with Chat and Executor Toggle Support
+
+-- Services
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local localPlayer = Players.LocalPlayer
+local playerGui = localPlayer:WaitForChild("PlayerGui")
+
+-- == UI Container ==
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ReverendInsanityUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Add UIScale for mobile-friendly scaling
+local uiScale = Instance.new("UIScale")
+uiScale.Scale = 1.15 -- tweak for size preference
+uiScale.Parent = screenGui
+
+-- == Main Frame ==
+local mainFrame = Instance.new("Frame", screenGui)
+mainFrame.Size = UDim2.new(0.9, 0, 0, 420) -- 90% width, 420px height
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 30)
+mainFrame.BorderSizePixel = 0
+local mainCorner = Instance.new("UICorner", mainFrame)
+mainCorner.CornerRadius = UDim.new(0, 18)
+
+-- == Title (Draggable) ==
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundColor3 = Color3.fromRGB(100, 160, 255)
+title.Text = "REVEREND INSANITY"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.FontFace = Font.new("rbxassetid://12187375716", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+title.TextSize = 28
+title.ZIndex = 2
+local titleCorner = Instance.new("UICorner", title)
+titleCorner.CornerRadius = UDim.new(0, 18)
+
+-- == Button Builder ==
+local function makeButton(text, order)
+    local btn = Instance.new("TextButton", mainFrame)
+    btn.Size = UDim2.new(0.85, 0, 0, 48)
+    btn.Position = UDim2.new(0.075, 0, 0, 60 + (order - 1) * 60)
+    btn.BackgroundColor3 = Color3.fromRGB(100, 160, 255)
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.FontFace = Font.new("rbxassetid://12187375716", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+    btn.TextSize = 22
+    btn.Text = text
+    btn.AutoButtonColor = true
+    local btnCorner = Instance.new("UICorner", btn)
+    btnCorner.CornerRadius = UDim.new(0, 12)
+    return btn
+end
+
+-- == Main Buttons ==
+local spoofPlayerBtn = makeButton("AVATAR SPOOFER/ESCAPE MENU/LEADERSTAT", 1)
+local KillsoundIdBtn = makeButton("Kill Sound Id Method", 2)
+local BillboardIdBtn = makeButton("Billboard Id Method", 3)
+
+-- == Thanks Section (Scrollable) ==
+local thanksFrame = Instance.new("Frame", mainFrame)
+thanksFrame.Position = UDim2.new(0.05, 0, 1, -160)
+thanksFrame.Size = UDim2.new(0.9, 0, 0, 120)
+thanksFrame.BackgroundColor3 = Color3.fromRGB(100, 160, 255)
+thanksFrame.BorderSizePixel = 0
+thanksFrame.ClipsDescendants = true
+local thanksCorner = Instance.new("UICorner", thanksFrame)
+thanksCorner.CornerRadius = UDim.new(0, 12)
+
+local thanksScroll = Instance.new("ScrollingFrame", thanksFrame)
+thanksScroll.Size = UDim2.new(1, 0, 1, 0)
+thanksScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+thanksScroll.BackgroundTransparency = 1
+thanksScroll.ScrollBarThickness = 8
+thanksScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+local thanksList = {
+    { name = "@dragonfly50101", contribution = "Saving us with a GOATED Morph Script" },
+    { name = "@reap4985", contribution = "Saved us with CharacterMesh method" },
+    { name = "@avrogottermed16", contribution = "Escape Menu Persistence Method, so smart boii, Co Owner of JJS UG, Day 0 Great Friend, we are the exception holder" },
+    { name = "@ffj2.0", contribution = "Inspiration" },
+    { name = "@bar5", contribution = "Trust funds, JJS comp demon & Great friend, we are the exception holder" },
+    { name = "@sttrigger0", contribution = "Underground Plug, putting us on sketchy websites, opinion & emotion stylist" },
+    { name = "@pman42", contribution = "FDN EMPEROR And The Mayday dance gif Progenitor" },
+    { name = "@21_zs", contribution = "Going undercover in enemy territory, RNE Aura Stylist" },
+}
+local thanksTitle = Instance.new("TextLabel", thanksScroll)
+thanksTitle.Size = UDim2.new(1, -10, 0, 28)
+thanksTitle.Position = UDim2.new(0, 5, 0, 4)
+thanksTitle.BackgroundTransparency = 1
+thanksTitle.Text = "DISCORD SPECIAL THANKS TO:"
+thanksTitle.Font = Enum.Font.SourceSansBold
+thanksTitle.TextSize = 20
+thanksTitle.TextColor3 = Color3.fromRGB(255,255,255)
+thanksTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local uiList = Instance.new("UIListLayout", thanksScroll)
+uiList.Padding = UDim.new(0, 2)
+uiList.SortOrder = Enum.SortOrder.LayoutOrder
+
+for i, entry in ipairs(thanksList) do
+    local row = Instance.new("TextLabel", thanksScroll)
+    row.Size = UDim2.new(1, -10, 0, 28)
+    row.BackgroundTransparency = 1
+    row.TextColor3 = Color3.fromRGB(240, 240, 255)
+    row.Font =  Enum.Font.SourceSans
+    row.TextSize = 16
+    row.TextXAlignment = Enum.TextXAlignment.Left
+    row.TextWrapped = true
+    row.Text = string.format("%s: %s", entry.name, entry.contribution)
+    row.LayoutOrder = i
+end
+
+-- == Quit Button ==
+local quitBtn = Instance.new("TextButton", mainFrame)
+quitBtn.Size = UDim2.new(0.85, 0, 0, 44)
+quitBtn.Position = UDim2.new(0.075, 0, 1, -50)
+quitBtn.AnchorPoint = Vector2.new(0, 1)
+quitBtn.BackgroundColor3 = Color3.fromRGB(255,105,97)
+quitBtn.TextColor3 = Color3.fromRGB(255,255,255)
+quitBtn.FontFace = Font.new("rbxassetid://12187375716", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+quitBtn.TextSize = 20
+quitBtn.Text = "<< Close GUI <<"
+local quitCorner = Instance.new("UICorner", quitBtn)
+quitCorner.CornerRadius = UDim.new(0, 12)
+
+-- == Dragging (Touch + Mouse) ==
+local function AddDraggingFunctionality(DragPoint, Main)
+    local dragging, dragInput, startPos, startFrame
+    local function update(input)
+        local delta = input.Position - startPos
+        Main.Position = UDim2.new(
+            startFrame.X.Scale, startFrame.X.Offset + delta.X,
+            startFrame.Y.Scale, startFrame.Y.Offset + delta.Y
+        )
+    end
+    DragPoint.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            startPos = input.Position
+            startFrame = Main.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    DragPoint.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
+end
+AddDraggingFunctionality(title, mainFrame)
+
+-- == Click Sound ==
+local clickSound = Instance.new("Sound")
+clickSound.SoundId = "rbxassetid://8388724806"
+clickSound.Volume = 1
+clickSound.Parent = workspace
+
+-- == Reference Other UIs for Buttons ==
+local ReverendInsanitySpooferUI = playerGui:FindFirstChild("ReverendInsanitySpooferUI")
+local ReverendInsanityKillsoundUI = playerGui:FindFirstChild("ReverendInsanityKillsoundUI")
+local ReverendInsanityBillboardUI = playerGui:FindFirstChild("ReverendInsanityBillboardUI")
+
+spoofPlayerBtn.MouseButton1Click:Connect(function()
+    clickSound:Play()
+    if ReverendInsanitySpooferUI then ReverendInsanitySpooferUI.Enabled = true end
+    screenGui.Enabled = false
+end)
+KillsoundIdBtn.MouseButton1Click:Connect(function()
+    clickSound:Play()
+    if ReverendInsanityKillsoundUI then ReverendInsanityKillsoundUI.Enabled = true end
+    screenGui.Enabled = false
+end)
+BillboardIdBtn.MouseButton1Click:Connect(function()
+    clickSound:Play()
+    if ReverendInsanityBillboardUI then ReverendInsanityBillboardUI.Enabled = true end
+    screenGui.Enabled = false
+end)
+quitBtn.MouseButton1Click:Connect(function()
+    clickSound:Play()
+    screenGui.Enabled = false
+end)
+
+-- == Mobile "Open" Button ==
+local openBtn = Instance.new("ImageButton", screenGui)
+openBtn.Size = UDim2.new(0, 56, 0, 56)
+openBtn.Position = UDim2.new(1, -68, 1, -68)
+openBtn.AnchorPoint = Vector2.new(1, 1)
+openBtn.BackgroundTransparency = 0.25
+openBtn.BackgroundColor3 = Color3.fromRGB(100,160,255)
+openBtn.Image = "rbxassetid://10734941059" -- Use your icon asset!
+local openCorner = Instance.new("UICorner", openBtn)
+openCorner.CornerRadius = UDim.new(1, 0)
+openBtn.Visible = false
+screenGui:GetPropertyChangedSignal("Enabled"):Connect(function()
+    openBtn.Visible = not screenGui.Enabled and openBtn._AllowShow ~= false
+end)
+openBtn.MouseButton1Click:Connect(function()
+    screenGui.Enabled = true
+end)
+
+-- == Keyboard shortcut for desktop users ==
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.RightControl then
+        screenGui.Enabled = not screenGui.Enabled
+    end
+end)
+
+-- == Hide/Show All UI (even toggle button) by chat commands ==
+local function setAllUIVisible(isVisible)
+    screenGui.Enabled = isVisible
+    openBtn.Visible = isVisible
+    openBtn._AllowShow = isVisible -- Prevent openBtn from reappearing instantly
+end
+
+localPlayer.Chatted:Connect(function(msg)
+    if msg == "/e" then
+        setAllUIVisible(false)
+    elseif msg == "/E" then
+        setAllUIVisible(true)
+    end
+end)
+
+-- == Executor Support: Global Toggle Function ==
+_G.ToggleReverendInsanityUI = function(enabled)
+    setAllUIVisible(enabled)
+end
